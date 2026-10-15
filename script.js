@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const navbar = document.getElementById('navbar');
   const navLinks = document.querySelectorAll('.nav-link');
   const sections = document.querySelectorAll('.section, .hero');
+  let lastScrollY = 0;
 
   function handleScroll() {
     const scrollY = window.scrollY;
@@ -35,6 +36,18 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       navbar.classList.remove('scrolled');
     }
+
+    // Hide on scroll down, show on scroll up
+    if (scrollY > 200) {
+      if (scrollY > lastScrollY) {
+        navbar.classList.add('nav-hidden');
+      } else {
+        navbar.classList.remove('nav-hidden');
+      }
+    } else {
+      navbar.classList.remove('nav-hidden');
+    }
+    lastScrollY = scrollY;
 
     // Active nav link
     let currentSection = '';
