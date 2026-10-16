@@ -27,8 +27,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const sections = document.querySelectorAll('.section, .hero');
   let lastScrollY = 0;
 
+  // ===== Frame Border Elements =====
+  const frameTop = document.querySelector('.frame-top');
+  const frameBottom = document.querySelector('.frame-bottom');
+  const frameCornersTop = document.querySelectorAll('.frame-corner-tl, .frame-corner-tr');
+  const frameCornersBottom = document.querySelectorAll('.frame-corner-bl, .frame-corner-br');
+
   function handleScroll() {
     const scrollY = window.scrollY;
+
+    // Top border line & corners: hide when user starts to scroll
+    if (scrollY > 25) {
+      if (frameTop) frameTop.classList.add('frame-hidden');
+      frameCornersTop.forEach(el => el.classList.add('frame-hidden'));
+    } else {
+      if (frameTop) frameTop.classList.remove('frame-hidden');
+      frameCornersTop.forEach(el => el.classList.remove('frame-hidden'));
+    }
+
+    // Bottom border line & corners: visible only when reaching the end of the page
+    const windowBottom = window.innerHeight + scrollY;
+    const documentHeight = document.documentElement.scrollHeight;
+    const isAtBottom = windowBottom >= documentHeight - 60;
+
+    if (isAtBottom) {
+      if (frameBottom) frameBottom.classList.add('frame-visible');
+      frameCornersBottom.forEach(el => el.classList.add('frame-visible'));
+    } else {
+      if (frameBottom) frameBottom.classList.remove('frame-visible');
+      frameCornersBottom.forEach(el => el.classList.remove('frame-visible'));
+    }
 
     // Navbar background
     if (scrollY > 50) {
@@ -149,33 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
     particlesContainer.appendChild(particle);
   }
 
-  // ===== Stat Counter Animation =====
-  const statNumbers = document.querySelectorAll('.stat-number[data-target]');
-
-  function animateCounters() {
-    statNumbers.forEach(stat => {
-      const target = parseInt(stat.getAttribute('data-target'));
-      const current = parseInt(stat.textContent);
-      
-      if (current < target) {
-        stat.textContent = current + 1;
-        setTimeout(() => animateCounters(), 150);
-      }
-    });
-  }
-
-  // Trigger counter when hero is visible
-  const heroObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        setTimeout(animateCounters, 800);
-        heroObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.3 });
-
-  const heroSection = document.getElementById('hero');
-  if (heroSection) heroObserver.observe(heroSection);
 
   // ===== Score Bar Animation =====
   const scoreFills = document.querySelectorAll('.score-fill');
